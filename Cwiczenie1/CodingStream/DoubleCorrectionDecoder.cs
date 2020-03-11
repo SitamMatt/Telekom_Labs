@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Cwiczenie1
+namespace Cwiczenie1.CodingStream
 {
     public class DoubleCorrectionDecoder : CodingStream
     {

@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace Cwiczenie1
+namespace Cwiczenie1.BitFormatting
 {
     public class BitFormatter
     {

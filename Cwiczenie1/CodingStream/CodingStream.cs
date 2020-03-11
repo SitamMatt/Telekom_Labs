@@ -1,6 +1,7 @@
 ﻿using System.IO;
+using Cwiczenie1.BitFormatting;
 
-namespace Cwiczenie1
+namespace Cwiczenie1.CodingStream
 {
     public abstract class CodingStream
     {

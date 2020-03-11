@@ -1,4 +1,4 @@
-﻿namespace Cwiczenie1
+﻿namespace Cwiczenie1.CodingStream
 {
     public class SingleCorrectionEncoder : CodingStream
     {
