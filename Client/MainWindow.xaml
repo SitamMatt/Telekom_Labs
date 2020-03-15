@@ -11,6 +11,12 @@
             <TabItem Header="Korekcja Błędów">
                 <Frame Source="ECCPage.xaml"/>
             </TabItem>
+            <TabItem Header="XModem">
+                <Frame Source="XModemPage.xaml"/>
+            </TabItem>
+            <TabItem Header="A/C" Selector.IsSelected="True">
+                <Frame Source="ACPage.xaml"/>
+            </TabItem>
         </TabControl>
     </Grid>
 </Window>

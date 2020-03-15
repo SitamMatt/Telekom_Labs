@@ -7,7 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.IO.Ports" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Cwiczenie1\Cwiczenie1.csproj" />
+    <ProjectReference Include="..\Cwiczenie2\Cwiczenie2.csproj" />
+    <ProjectReference Include="..\Cwiczenie4\Cwiczenie4.csproj" />
   </ItemGroup>
 
 </Project>

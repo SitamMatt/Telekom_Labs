@@ -7,15 +7,27 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="ACPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="ECCPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="XModemPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="ACPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="ECCPage.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="XModemPage.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

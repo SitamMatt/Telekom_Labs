@@ -11,34 +11,39 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" Grid.Row="0">
-            <StackPanel>
-                <RadioButton Checked="InputTypeChecked">Plik</RadioButton>
-                <RadioButton Checked="InputTypeChecked">Ciąg bitów</RadioButton>
-                <RadioButton Checked="InputTypeChecked">Bajt</RadioButton>
-                <TextBox x:Name="InputTextBox"></TextBox>
-            </StackPanel>
-
-            <StackPanel>
-                <RadioButton Checked="CodingModeChecked">Koduj-1</RadioButton>
-                <RadioButton Checked="CodingModeChecked">Koduj-2</RadioButton>
-                <RadioButton Checked="CodingModeChecked">Odkoduj-1</RadioButton>
-                <RadioButton Checked="CodingModeChecked">Odkoduj-2</RadioButton>
-            </StackPanel>
-
-            <StackPanel>
-                <RadioButton Checked="OutputTypeChecked">Plik</RadioButton>
-                <RadioButton Checked="OutputTypeChecked">Konsola</RadioButton>
-                <TextBox x:Name="OutputTextBox"></TextBox>
-            </StackPanel>
-
-            <StackPanel>
-                <RadioButton Checked="OutputStyleChecked">Binarny</RadioButton>
-                <RadioButton Checked="OutputStyleChecked">Bity tekstowo</RadioButton>
-            </StackPanel>
+            <Border BorderThickness="1" BorderBrush="Black">
+                <StackPanel Margin="15,15,15,15">
+                    <RadioButton Checked="InputTypeChecked">Plik</RadioButton>
+                    <RadioButton Checked="InputTypeChecked">Ciąg bitów</RadioButton>
+                    <RadioButton Checked="InputTypeChecked">Bajt</RadioButton>
+                    <TextBox x:Name="InputTextBox"></TextBox>
+                </StackPanel>
+            </Border>
+            <Border BorderThickness="1" BorderBrush="Black">
+                <StackPanel Margin="15,15,15,15">
+                    <RadioButton Checked="CodingModeChecked">Koduj-1</RadioButton>
+                    <RadioButton Checked="CodingModeChecked">Koduj-2</RadioButton>
+                    <RadioButton Checked="CodingModeChecked">Odkoduj-1</RadioButton>
+                    <RadioButton Checked="CodingModeChecked">Odkoduj-2</RadioButton>
+                </StackPanel>
+            </Border>
+            <Border BorderThickness="1" BorderBrush="Black">
+                <StackPanel Margin="15,15,15,15">
+                    <RadioButton Checked="OutputTypeChecked">Plik</RadioButton>
+                    <RadioButton Checked="OutputTypeChecked">Konsola</RadioButton>
+                    <TextBox x:Name="OutputTextBox"></TextBox>
+                </StackPanel>
+            </Border>
+            <Border BorderThickness="1" BorderBrush="Black">
+                <StackPanel Margin="15,15,15,15">
+                    <RadioButton Checked="OutputStyleChecked">Binarny</RadioButton>
+                    <RadioButton Checked="OutputStyleChecked">Bity tekstowo</RadioButton>
+                </StackPanel>
+            </Border>
         </StackPanel>
-        <Button Grid.Row="1" Click="Run" >Start</Button>
+        <Button Grid.Row="1" Margin="15,15,15,15" Click="Run" HorizontalAlignment="Center" VerticalAlignment="Center">Start</Button>
     </Grid>
 </Page>
