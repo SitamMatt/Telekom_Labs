@@ -15,18 +15,34 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock FontSize="32" HorizontalAlignment="Center" Grid.Row="0" Grid.ColumnSpan="2">Przetwornik A/C</TextBlock>
+        <TextBlock FontSize="32" HorizontalAlignment="Center" Grid.Row="0" Grid.ColumnSpan="3">Przetwornik A/C</TextBlock>
         <StackPanel Grid.Row="1" Grid.Column="0"> 
-            <TextBlock HorizontalAlignment="Center">Nagrywanie</TextBlock>
-            <ComboBox x:Name="RecordingDevicesSelector">
+            <TextBlock HorizontalAlignment="Center" FontSize="24">Nagrywanie</TextBlock>
+            <ComboBox x:Name="RecordingDevicesSelector" Margin="20,20,20,20">
                 
             </ComboBox>
-            <Button Content="Nagrywaj"/>
-            <Button Content="Zapisz"/>
+            <Button Margin="20,20,20,20" Click="Recording" x:Name="RecordBtn" Content="Nagrywaj" HorizontalAlignment="Center" Padding="5,0,5,0"/>
+
+            <TextBlock Margin="20,20,20,20" HorizontalAlignment="Center">Info</TextBlock>
+
+            <Button Margin="20,20,20,20" Click="SaveRecording" Content="Zapisz" HorizontalAlignment="Center" Padding="5,0,5,0" IsEnabled="False" x:Name="SaveBtn"/>
         </StackPanel>
-        <StackPanel Grid.Row="1" Grid.Column="1"></StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="2">
+            <TextBlock HorizontalAlignment="Center" FontSize="24">Odtwarzanie</TextBlock>
+
+            <Button Margin="20,20,20,20" Click="PickRecording" Content="Wybierz" HorizontalAlignment="Center" Padding="5,0,5,0"/>
+
+            <TextBlock Margin="20,20,20,20" HorizontalAlignment="Center">Info</TextBlock>
+
+            <Button Margin="20,20,20,20" IsEnabled="False" x:Name="PlayBtn" Click="PlaySound" Content="Odtwórz" HorizontalAlignment="Center" Padding="5,0,5,0"/>
+        </StackPanel>
 
     </Grid>
 
