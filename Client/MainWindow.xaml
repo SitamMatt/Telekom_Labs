@@ -14,7 +14,10 @@
             <TabItem Header="XModem">
                 <Frame Source="XModemPage.xaml"/>
             </TabItem>
-            <TabItem Header="A/C" Selector.IsSelected="True">
+            <TabItem Header="Kodowanie Huffmana" Selector.IsSelected="True">
+                <Frame Source="HuffmanPage.xaml"/>
+            </TabItem>
+            <TabItem Header="A/C" >
                 <Frame Source="ACPage.xaml"/>
             </TabItem>
         </TabControl>
