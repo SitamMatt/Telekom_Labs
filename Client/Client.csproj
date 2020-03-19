@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Cwiczenie1\Cwiczenie1.csproj" />
     <ProjectReference Include="..\Cwiczenie2\Cwiczenie2.csproj" />
+    <ProjectReference Include="..\Cwiczenie3\Cwiczenie3.csproj" />
     <ProjectReference Include="..\Cwiczenie4\Cwiczenie4.csproj" />
   </ItemGroup>
 
