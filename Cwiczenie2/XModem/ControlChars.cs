@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cwiczenie2.Xmodem
+namespace Telekom.XModem.Internal
 {
     public static class ControlChars
     {

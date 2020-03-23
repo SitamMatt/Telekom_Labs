@@ -1,126 +1,151 @@
-﻿using Cwiczenie2.XModem;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.IO.Ports;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using Timer = System.Timers.Timer;
 
-namespace Cwiczenie2
+namespace Telekom.XModem.Internal
 {
     class XModemReceiver
     {
-        private readonly SerialPort _port;
-        private readonly Stream _stream;
-        private readonly byte[] _buffer = new byte[132];
-        private bool _isReceiving = false;
-        private ManualResetEvent EOTReceived;
-        private byte _expectedBlockNumber = 1;
-        private readonly AbstractLogger logger = new ConsoleLogger();
+        private SerialPort serialPort;
+        private FileStream stream;
+        private int attemptsLimit = 10;
+        private int blockCounter = 1;
 
-        public XModemReceiver(string port)
+        public XModemReceiver(SerialPort serialPort, FileStream fs)
         {
-            _port = new SerialPort(port);
+            this.serialPort = serialPort;
+            stream = fs;
         }
 
-        public XModemReceiver(Stream stream, SerialPort port)
+        private byte ReceivePacket(Span<byte> span, CancellationToken token)
         {
-            _stream = stream;
-            _port = port;
-        }
-
-        public void Receive()
-        {
-            EOTReceived = new ManualResetEvent(false);
-            _port.Open();
-            //_port.ReadTimeout = 10000;
-            _port.DataReceived += DataReceived;
-            // wysłaj sygnał NAK co 10 sekund przez 1 minutę
-            logger.Log("Receiving started...");
-            int counter = 0;
-            while (counter!=6 && !_isReceiving)
+            for (int attempts = 0; attempts < attemptsLimit; attempts++)
             {
-                logger.Log("NAK Handshake");
-                SendNAK();
-                Thread.Sleep(10000); // 10 seconds interval
-                counter++;
+                token.ThrowIfCancellationRequested();
+                try
+                {
+                    return ReadPacket(span);
+                }
+                catch (Exception e) when (e is TimeoutException || e is InvalidPacketException)
+                {
+                    Console.WriteLine(e.GetType().ToString());
+                    SendFlag(ControlChars.NAK);
+                    Console.WriteLine($"Sending NAK due to {e.GetType()}");
+                }
             }
-            EOTReceived.WaitOne();
-            logger.Log("Transmission finished");
-        }
 
-        private void DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-            logger.Log($"Received data: {_port.BytesToRead}");
-            _port.Read(_buffer, 0, _buffer.Length);
-            Span<byte> data = _buffer;
-            switch (data[0])
+            token.ThrowIfCancellationRequested();
+            try
             {
-                case Xmodem.ControlChars.SOH:
-                    logger.Log("SOH packet");
-                    _isReceiving = true;
-                    HandlePacket(data);
-                    break;
-                case Xmodem.ControlChars.EOT:
-                    logger.Log("EOT packet");
-                    SendACK();
-                    EOTReceived.Set();
-                    break;
-                case Xmodem.ControlChars.C:
-                    break;
+                return ReadPacket(span); // ostatnie podejście
+            }
+            catch (Exception e) when (e is TimeoutException || e is InvalidPacketException)
+            {
+                throw new ExceededAttemptsException();
             }
         }
 
-        private void SendACK()
+        private byte ReadPacket(Span<byte> span)
         {
-            logger.Log("Sending ACK");
-            byte[] buff =  { Xmodem.ControlChars.ACK };
-            _port.Write(buff, 0, 1);
-        }
-
-        private void SendNAK()
-        {
-            logger.Log("Sending NAK");
-            byte[] buff = { Xmodem.ControlChars.NAK };
-            _port.Write(buff, 0, 1);
-        }
-
-        private void HandlePacket(ReadOnlySpan<byte> data)
-        {
-            byte blockNumber = data[1];
-            if(blockNumber != _expectedBlockNumber)
+            serialPort.BaseStream.Read(span.Slice(0, 1));
+            switch (span[0])
             {
-                // handle wrong block number;
-                logger.Log($"Wrong block number (expected: {_expectedBlockNumber}, received: {blockNumber}");
-                return;
+                case ControlChars.SOH:
+                    serialPort.BaseStream.Read(span.Slice(1, 131));
+                    ValidatePacket(span);
+                    Console.WriteLine("Valid Packet Received");
+                    SendFlag(ControlChars.ACK);
+                    return ControlChars.SOH;
+                case ControlChars.C:
+                    serialPort.BaseStream.Read(span.Slice(1, 132));
+                    ValidatePacket(span);
+                    Console.WriteLine("Valid CRC Packet Received");
+                    SendFlag(ControlChars.ACK);
+                    return ControlChars.C;
+                case ControlChars.EOT:
+                    Console.WriteLine("Received EOT packet. Ending...");
+                    SendFlag(ControlChars.ACK);
+                    return ControlChars.EOT;
+                default:
+                    throw new InvalidPacketException();
             }
-            int checksum = data[data.Length - 1];
-            int calculated = Utils.CalculateChecksum(data.Slice(0, data.Length-1));
-            if(checksum != calculated)
-            {
-                // handle checksum inequality
-                logger.Log($"Wrong Checksum (expected: {checksum}, calculated: {calculated}");
-                return;
-            }
-            _expectedBlockNumber++;
-            int paddingStart = data.IndexOf(Xmodem.ControlChars.SUB);
-            _stream.Write(data.Slice(3, paddingStart-3));
-            logger.Log("Bytes succesfully has been written to stream");
-            SendACK();
         }
 
-        //private int CalculateChecksum(ReadOnlySpan<byte> data)
-        //{
+        public void Receive(CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            Span<byte> span = stackalloc byte[133];
+            serialPort.ReadTimeout = 10 * 1000;
+            serialPort.DiscardInBuffer();
+            SendFlag(ControlChars.NAK);
+            Console.WriteLine("Sending NAK due to initialization");
 
-        //    int sum = 0;
-        //    for (int i = 0; i < data.Length; i++)
-        //    {
-        //        sum += data[i];
-        //    }
-        //    return sum % 256;
-        //}
+            while (ReceivePacket(span, token) != ControlChars.EOT)
+            {
+                token.ThrowIfCancellationRequested();
+                Span<byte> data = SlicePadding(span.Slice(3, 128));
+                stream.Write(data);
+            }
+        }
+
+        private Span<byte> SlicePadding(Span<byte> packet)
+        {
+            int paddingStart = packet.IndexOf(ControlChars.SUB);
+            if (paddingStart == -1)
+            {
+                paddingStart = 128;
+            }
+            
+            var data =  packet.Slice(0, paddingStart);
+            return data;
+        }
+
+        private void SendFlag(in byte flag)
+        {
+            serialPort.BaseStream.WriteByte(flag);
+        }
+
+        private bool ValidatePacket(Span<byte> packet)
+        {
+            byte header = packet[0];
+            
+            if (header != ControlChars.SOH && header != ControlChars.C)
+                throw new InvalidPacketException();
+            
+            byte blockNumber = packet[1];
+            
+            if(blockNumber != blockCounter)
+                throw new InvalidPacketException();
+
+            if (header == ControlChars.SOH)
+            {
+                int checksum = packet[132 - 1];
+                int calculated = Utils.CalculateChecksum(packet.Slice(0, 132-1));
+            
+                if(checksum != calculated)
+                    throw new InvalidPacketException();
+            }else if (header == ControlChars.C)
+            {
+                var checksum = packet.Slice(131, 2);
+                var calculated = Utils.CalculateCRC(packet.Slice(0, 131));
+                Span<byte> buff = stackalloc byte[2];
+                buff[0] = (byte) calculated;
+                buff[1] = (byte) (calculated >> 8);
+                
+                if (checksum.SequenceEqual(buff))
+                {
+                    Console.WriteLine("Packet OK");
+                }
+                else
+                {
+                    throw new InvalidPacketException();
+                }
+                    
+            }
+            blockCounter++;
+            return true;
+        }
+
     }
 }
