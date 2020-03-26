@@ -61,11 +61,17 @@
             </TextBlock>
 
             <Button
+                x:Name="SendBtn"
                 Padding="5,0,5,0"
                 HorizontalAlignment="Center"
-                Click="SendClick">
+                Click="SendClick"
+                IsEnabled="False">
                 Wyślij
             </Button>
+            <TextBlock
+                x:Name="SendStatus"
+                Margin="15,0,15,15"
+                HorizontalAlignment="Center" />
         </StackPanel>
         <StackPanel
             Grid.Row="1"
@@ -92,6 +98,7 @@
                     VerticalAlignment="Center" />
             </StackPanel>
             <Button
+                x:Name="ServerBtn"
                 Margin="15,10,15,10"
                 Padding="5,0,5,0"
                 HorizontalAlignment="Center"
@@ -106,16 +113,19 @@
                 Status: Nie nasłuchuje
             </TextBlock>
 
-            <Label x:Name="DataStatus">Odebrano:</Label>
             <Button
                 x:Name="SaveBtn"
-                Margin="15,10,15,10"
                 Padding="5,0,5,0"
                 HorizontalAlignment="Center"
                 Click="SaveClick"
                 IsEnabled="False">
                 Zapisz
             </Button>
+
+            <TextBlock
+                x:Name="ReceiveStatus"
+                Margin="15,0,15,15"
+                HorizontalAlignment="Center" />
         </StackPanel>
     </Grid>
 </Page>

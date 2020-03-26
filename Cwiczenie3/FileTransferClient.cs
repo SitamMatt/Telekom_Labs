@@ -1,91 +1,44 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace Cwiczenie3
+namespace Telekom.Sockets
 {
     public class FileTransferClient
     {
-        // change to private
-        public Socket socket;
+        private Socket socket;
+        private IPEndPoint ipEndPoint;
 
-        public event EventHandler Connected;
-        public event EventHandler ConnectionFailed;
-
-        public bool IsConnected { get; set; } = false;
-
-        public FileTransferClient()
+        public FileTransferClient(string address, int port)
         {
-            try
-            {
-                socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            }
-            catch (Exception e)
-            {
-            }
+            ipEndPoint = new IPEndPoint(IPAddress.Parse(address), port);
+            socket = new Socket(ipEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
         }
 
-        public void Connect(string address, int port)
+        public async Task ConnectAsync()
         {
-            //try
-            //{
-                var endpoint = new IPEndPoint(IPAddress.Parse(address), port);
-                var handle = socket.BeginConnect(endpoint, ConnectCallback, null);
-
-                bool res = handle.AsyncWaitHandle.WaitOne(10000, true);
-                if (socket.Connected)
-                {
-                    Connected(this, EventArgs.Empty);
-                    socket.EndConnect(handle);
-                    IsConnected = true;
-                }
-                else
-                {
-                    socket.Close();
-                    throw new Exception("elo");
-                }
-            //}
-            //catch (Exception)
-            //{
-
-            //}
-            
+            await socket.ConnectAsync(ipEndPoint);
         }
 
-        public void Send(string msg)
+        public async Task SendAsync(string filename)
         {
-            var bytes = Encoding.ASCII.GetBytes(msg);
-            socket.BeginSend(bytes, 0, bytes.Length, SocketFlags.None, SendCallback, null);
-        }
-
-        private void SendCallback(IAsyncResult ar)
-        {
-            try
-            {
-                socket.EndSend(ar);
-            }
-            catch (Exception)
-            {
-            }
-        }
-
-        private void ConnectCallback(IAsyncResult ar)
-        {
-            //try
+            //using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
             //{
-                
-            //}
-            //catch (Exception e)
-            //{
-                
+            //var bytes = new byte[fs.Length];
+            var msg = File.ReadAllText(filename);
+            var bytes = Telekom.Encoding.Huffman.Encode(msg);
+                //fs.Read(bytes);
+            var res = await socket.SendAsync(bytes, SocketFlags.None);
             //}
         }
 
-        public void Send(byte[] data)
+        public void Close()
         {
-            socket.BeginSend(data, 0, data.Length, SocketFlags.None, SendCallback, null);
+            socket.Close();
         }
     }
 }
