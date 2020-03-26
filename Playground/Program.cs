@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,9 +19,10 @@ namespace Playground
 
         static async Task Run()
         {
-            using var fs = new FileStream(@"E:/filename.txt", FileMode.Open, FileAccess.Read);
-            byte[] buffer = new byte[1024];
-            await fs.ReadAsync(buffer, cts.Token);
+            var server = new TcpListener(IPAddress.Parse("127.0.0.1"),6758 );
+            var client = new TcpClient("127.0.0.1", 6787);
+            var cliennt = await server.AcceptTcpClientAsync();
+            cliennt.GetStream();
         }
     }
 }

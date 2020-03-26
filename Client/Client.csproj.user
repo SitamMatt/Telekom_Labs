@@ -13,6 +13,9 @@
     <Compile Update="ECCPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="HuffmanPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="XModemPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -22,6 +25,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="ECCPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="HuffmanPage.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MainWindow.xaml">
