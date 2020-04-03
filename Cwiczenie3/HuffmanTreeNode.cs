@@ -2,6 +2,9 @@
 
 namespace Telekom.Huffman
 {
+    /// <summary>
+    /// Węzeł drzewa Huffmana
+    /// </summary>
     internal class HuffmanTreeNode
     {
         public HuffmanTreeNode Parent { get; set; }
@@ -9,8 +12,8 @@ namespace Telekom.Huffman
         public HuffmanTreeNode RightChild { get; set; }
         public bool IsLeaf => LeftChild == null && RightChild == null;
         
-        public char Char { get; private set; }
-        public int Probability { get; private set; }
+        public char Char { get; private set; } // przechowywany znak
+        public int Probability { get; private set; } // prawdopodobienstwo wystąpienia
 
         public HuffmanTreeNode(char c, int probability)
         {

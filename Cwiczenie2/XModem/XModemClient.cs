@@ -7,15 +7,18 @@ using Telekom.XModem.Internal;
 
 namespace Telekom.XModem
 {
+    /// <summary>
+    /// Klasa ta wykorzystuje Sender i Receiver i ułatwia korzystanie z nich
+    /// </summary>
     public class XModemClient : IDisposable
     {
         private SerialPort serialPort;
 
         public bool IsOperationPending { get; set; } = false;
 
-        public XModemClient(string port)
+        public XModemClient(string port, int baudRate = 9600)
         {
-            serialPort = new SerialPort(port);
+            serialPort = new SerialPort(port, baudRate);
             serialPort.Open();
         }
 

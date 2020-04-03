@@ -39,7 +39,7 @@ namespace Client
                 SaveFileDialog dialog = new SaveFileDialog();
                 if (dialog.ShowDialog() == true)
                 {
-                    using (inClient = new XModemClient((string)ComPortsSelector1.SelectedItem))
+                    using (inClient = new XModemClient((string)ComPortsSelector1.SelectedItem, Convert.ToInt32(ComPortSpeed1.Text)))
                     {
                         ReceiveBtn.Content = "Przerwij";
                         ReceiverStatus.Text = "Oczekiwanie na odpowiedź";
@@ -77,7 +77,7 @@ namespace Client
                 OpenFileDialog dialog = new OpenFileDialog();
                 if (dialog.ShowDialog() == true)
                 {
-                    using (outClient = new XModemClient((string)ComPortsSelector2.SelectedItem))
+                    using (outClient = new XModemClient((string)ComPortsSelector2.SelectedItem, Convert.ToInt32(ComPortSpeed2.Text)))
                     {
                         SendBtn.Content = "Przerwij";
                         SenderStatus.Text = "Oczekiwanie na sygnał";

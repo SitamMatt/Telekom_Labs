@@ -9,10 +9,12 @@ namespace Telekom.Huffman
     {
         static void Main(string[] args)
         {
-            string text = "Hello World";
-            var encoded = Telekom.Encoding.Huffman.Encode(text);
-            var decoded = Telekom.Encoding.Huffman.Decode(encoded);
+            string text = "Hello World"; // tekst do zakodowania
+            var encoded = Telekom.Encoding.Huffman.Encode(text); // zakodowanie
+            var decoded = Telekom.Encoding.Huffman.Decode(encoded); // odkowowanie
             Console.WriteLine(text == decoded);
+            
+            // praca z gniazdami
             var server = new FileTransferServer("127.0.0.1", 5678);
             var client = new FileTransferClient("127.0.0.1", 5678);
             var t1 = server.AcceptAsync();

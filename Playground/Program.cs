@@ -12,17 +12,14 @@ namespace Playground
     {
         static void Main(string[] args)
         {
-            Task.Run(Run).Wait();
+            byte res = 0;
+            for (int j = 7; j >= 0; j--)
+            {
+                res |= (byte) (1 << j);
+            }
+            Console.WriteLine(res);
         }
 
-        static CancellationTokenSource cts = new CancellationTokenSource();
 
-        static async Task Run()
-        {
-            var server = new TcpListener(IPAddress.Parse("127.0.0.1"),6758 );
-            var client = new TcpClient("127.0.0.1", 6787);
-            var cliennt = await server.AcceptTcpClientAsync();
-            cliennt.GetStream();
-        }
     }
 }

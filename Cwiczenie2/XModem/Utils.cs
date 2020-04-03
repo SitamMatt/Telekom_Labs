@@ -18,16 +18,16 @@ namespace Telekom
         
         public static ushort CalculateCRC(ReadOnlySpan<byte> data)
         {
-            const ushort generator = 0x1021; /* divisor is 16bit */
-            ushort crc = 0; /* CRC value is 16bit */
+            const ushort generator = 0x1021; // wielomian
+            ushort crc = 0; // wynik CRC
 
             foreach (byte b in data)
             {
-                crc ^= (ushort)(b << 8); /* move byte into MSB of 16bit CRC */
+                crc ^= (ushort)(b << 8);
 
                 for (int i = 0; i < 8; i++)
                 {
-                    if ((crc & 0x8000) != 0) /* test for MSB = bit 15 */
+                    if ((crc & 0x8000) != 0)
                     {
                         crc = (ushort)((crc << 1) ^ generator);
                     }

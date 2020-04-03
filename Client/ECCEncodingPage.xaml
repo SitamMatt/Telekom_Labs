@@ -1,0 +1,68 @@
+﻿<Page
+    x:Class="Client.ECCEncodingPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Client"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="ECCEncodingPage"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <StackPanel HorizontalAlignment="Center">
+        <TextBlock Margin="15,15,15,15" FontSize="24">Kodowanie</TextBlock>
+        <TextBlock Margin="5,5,5,5">Dane Wejściowe:</TextBlock>
+        <RadioButton
+            Name="FileSelectRadio"
+            Margin="5,5,5,5"
+            Content="Plik"
+            GroupName="InputSourceE" />
+        <Button
+            Margin="10,0,10,0"
+            HorizontalAlignment="Left"
+            Click="PickFile"
+            Content="Wybierz Plik"
+            IsEnabled="{Binding ElementName=FileSelectRadio, Path=IsChecked}" />
+        <RadioButton
+            Name="BitsSelectRadio"
+            Margin="5,5,5,5"
+            Content="Ciąg bitów"
+            GroupName="InputSourceE" />
+        <TextBox
+            x:Name="BitsTextBox"
+            Width="100"
+            Margin="10,0,10,0"
+            HorizontalAlignment="Left"
+            IsEnabled="{Binding ElementName=BitsSelectRadio, Path=IsChecked}">
+            10101011
+        </TextBox>
+        <TextBlock Margin="5,5,5,5">Tryb Korekcji:</TextBlock>
+        <RadioButton
+            Name="DECCRadio"
+            Margin="5,5,5,5"
+            Content="Podwójnego błędu"
+            GroupName="CorrectionModeE" />
+        <RadioButton
+            Name="SECCRadio"
+            Margin="5,5,5,5"
+            Content="Pojedyńczego błędu"
+            GroupName="CorrectionModeE" />
+        <CheckBox
+            x:Name="FileOutputCheckBox"
+            Margin="5,5,5,5"
+            Content="Zapisz do pliku" />
+        <Button
+            Margin="10,10,10,10"
+            Padding="10,0,10,0"
+            HorizontalAlignment="Left"
+            Click="Button_Click">
+            Zakoduj
+        </Button>
+        <RichTextBox
+            x:Name="OutputText"
+            Width="100"
+            Margin="10,10,10,10"
+            HorizontalAlignment="Left"
+            IsReadOnly="True" />
+    </StackPanel>
+</Page>

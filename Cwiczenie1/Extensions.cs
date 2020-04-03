@@ -1,68 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Telekom.Bits;
 
 namespace Cwiczenie1
 {
     public static class Extensions
     {
-        public static byte ToByte(this IEnumerable<byte> bits)
+        public static BitVector ToBitVector(this byte bits, bool direction = false)
         {
-            if (bits.Count() != 8)
-            {
-                throw new Exception("Wrong size");
-            }
-
-            byte result = 0;
-            for (int i = 0; i < bits.Count(); i++)
-            {
-                result <<= 1;
-                result += bits.ElementAt(i);
-            }
-
-            return result;
+            return new BitVector(bits, direction);
         }
 
-        public static byte ReadBinaryByte(this ReadOnlySpan<char> bits)
+        public static void Print(this BitVector vector)
         {
-            if (bits.Length != 8)
-            {
-                throw new Exception("wrong size");
-            }
-
-            byte result = 0;
-            for (int i = 0; i < bits.Length; i++)
-            {
-                result <<= 1;
-                byte t = (byte) (bits[i] - 48);
-                if (t != 0 && t != 1)
-                {
-                    throw new Exception("wrong format");
-                }
-
-                result += t;
-            }
-
-            return result;
-        }
-
-        public static byte ReadBinaryByte(this string bits)
-        {
-            return bits.AsSpan().ReadBinaryByte();
-        }
-
-        public static bool TryReadBinaryByte(this string bits, out byte result)
-        {
-            try
-            {
-                result = bits.ReadBinaryByte();
-                return true;
-            }
-            catch (Exception e)
-            {
-                result = 0;
-                return false;
-            }
+            for (int i = 0; i < vector.Length; i++)
+                Console.WriteLine(vector[i] ? '1' : '0');
         }
     }
 }

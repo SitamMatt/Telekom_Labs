@@ -1,118 +1,92 @@
 ﻿using System;
-using System.Collections.Specialized;
-using System.Runtime.CompilerServices;
-using System.Text;
 
-namespace Cwiczenie1
+namespace Telekom.Bits
 {
-    public class BitVector
+    public ref struct BitVector
     {
-        private bool[] _vector;
-        public int Length => _vector.Length;
+        private Span<byte> data;
 
-        public BitVector(bool[] vector)
+        public Span<byte> Bytes => data;
+        public int Length => data.Length*8;
+
+        public BitVector(byte bits)
         {
-            this._vector = vector;
+            data = new byte[]{bits};
         }
 
-        public BitVector(int length)
+        public BitVector(Span<byte> bits)
         {
-            this._vector = new bool[length];
+            data = bits;
         }
 
-        public bool this[int i]
+        public BitVector(byte[] bits, bool direction = false)
         {
-            get => _vector[i];
-            set => _vector[i] = value;
-        }
-
-        public override string ToString()
-        {
-            StringBuilder builder = new StringBuilder(_vector.Length * 2);
-            for (int i = 0; i < _vector.Length; i++)
-            {
-                builder.Append(_vector[i] == false ? 0 : 1).Append(" ");
-            }
-
-            return builder.ToString();
-        }
-
-        public byte[] ToByteArray(bool offset = false)
-        {
-            if (!offset && (Length % 8 != 0))
-            {
-                throw new Exception("Wrong size");
-            }
-
-            int flen = Length % 8 == 0 ? Length / 8 : Length / 8 + 1;
-            int len = Length / 8;
-            byte[] arr = new byte[flen];
-            for (int i = 0; i < len; i++)
-            {
-                byte b = 0;
-                for (int j = 0; j < 8; j++)
-                {
-                    b <<= 1;
-                    byte c = (byte)(this[i*8 + j] == false ? 0 : 1);
-                    b += c;
-                }
-                arr[i] = b;
-            }
-
-            if (offset)
-            {
-                byte b1 = 0;
-                for (int i = 0; i < Length % 8; i++)
-                {
-                    b1 <<= 1;
-                    byte c = (byte) (this[len * 8 + i] == false ? 0 : 1);
-                    b1 += c;
-                }
-
-                b1 <<= 8 - (Length % 8);
-                arr[flen - 1] = b1;
-            }
-
-            return arr;
-        }
-
-        public static BitVector operator +(BitVector lgh, BitVector rgh)
-        {
-            if (lgh.Length != rgh.Length)
-            {
-                throw new Exception("Wrong size");
-            }
-            var result = new BitVector(lgh.Length);
-            for (int i = 0; i < lgh.Length; i++)
-            {
-                result[i] = lgh[i] ^ rgh[i];
-            }
-
-            return result;
+            data = bits;
         }
         
-        public static bool operator !=(BitVector lgh, BitVector rgh)
+        public BitVector(byte bits, bool direction)
         {
-            return !(lgh == rgh);
+            data = new[] {bits};
         }
 
-        public static bool operator ==(BitVector lgh, BitVector rgh)
+        public bool IsZero()
         {
-            if (lgh.Length != rgh.Length)
+            for (int i = 0; i < data.Length; i++)
             {
-                return false;
-            }
-
-            for (int i = 0; i < lgh.Length; i++)
-            {
-                if (lgh[i] != rgh[i])
-                {
+                if (data[i] != 0)
                     return false;
-                }
             }
 
             return true;
         }
 
+        public static BitVector operator *(BitMatrix matrix, BitVector vector)
+        {
+            int len = matrix.M;    
+            // if(matrix.N != vector.Length)
+            //     throw new Exception("Invalid Matrix Size");
+            
+            BitVector result = new BitVector(new byte[BitsUtils.GetBytesSize(len)]);
+            for (int i = 0; i < len; i++)
+            {
+                bool res = false;
+                for (int j = 0; j < matrix.N; j++)
+                {
+                    res ^= matrix[i, j] & vector[j];
+                }
+
+                result[i] = res;
+            }
+
+            return result;
+        }
+        
+        public bool this[int index]
+        {
+            get
+            {
+                int byteIndex = index / 8;
+                byte bitIndex = (byte) (index % 8);
+                byte mask = (byte)(1 << (7 - bitIndex));
+                byte bit = (byte) (data[byteIndex] & mask);
+                return bit != 0;
+            }
+            set
+            {
+                if (value == this[index]) return;
+                int byteIndex = index / 8;
+                byte bitIndex = (byte) (index % 8);
+                byte mask = (byte)(1 << (7 - bitIndex));
+                if (value)
+                    data[byteIndex] |= mask;
+                else
+                    data[byteIndex] &= (byte) (~mask);
+            }
+        }
+
+        public void SwitchBit(in int index)
+        {
+            this[index] = !this[index];
+        }
     }
 }

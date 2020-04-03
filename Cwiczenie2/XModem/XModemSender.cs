@@ -176,6 +176,7 @@ namespace Telekom.XModem.Internal
 
             if (crc)
             {
+                // obliczenie sumy kontrolnej
                 var checksum = Utils.CalculateCRC(span.Slice(0, 131));
                 Span<byte> buff = stackalloc byte[2];
                 buff[0] = (byte) checksum;

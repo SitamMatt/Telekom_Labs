@@ -10,6 +10,12 @@
     <Compile Update="ACPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="ECCDecodingPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="ECCEncodingPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="ECCPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -22,6 +28,12 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="ACPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ECCDecodingPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ECCEncodingPage.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="ECCPage.xaml">
